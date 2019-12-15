@@ -1,0 +1,45 @@
+Dictionary Contents
+angle : zavit
+astronaut : astronaut
+cat : hatul
+cabbage : kruv
+dictionary : milon
+exercise : targil
+flag : degel
+grade : tziyun
+home : bayt
+person : adam
+student : talmid
+teacher : more
+woman : isha
+Dictionary Contents
+angle : zavit
+cabbage : kruv
+dictionary : milon
+exercise : targil
+flag : degel
+grade : tziyun
+home : bayt
+person : adam
+student : talmid
+teacher : more
+woman : isha
+Dictionary Contents
+angle : zavit
+boy : yeled
+cow : para
+cabbage : kruv
+dictionary : milon
+exercise : targil
+flag : degel
+goat : ez
+grade : tziyun
+home : bayt
+person : adam
+school : beitsefer
+student : talmid
+teacher : more
+woman : isha
+Translation: flag : degel
+Translation: goat : ez
+Translation: school : beitsefer

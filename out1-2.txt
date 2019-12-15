@@ -1,0 +1,35 @@
+Dictionary Contents
+cat : hatul
+dog : kelev
+exercise : targil
+flag : degel
+home : bayt
+man : ish
+school : beitsefer
+student : talmid
+teacher : more
+woman : isha
+Dictionary Contents
+exercise : targil
+flag : degel
+home : bayt
+man : ish
+school : beitsefer
+student : talmid
+teacher : more
+woman : isha
+Dictionary Contents
+boy : yeled
+cow : para
+exercise : targil
+flag : degel
+goat : ez
+home : bayt
+man : ish
+school : beitsefer
+student : talmid
+teacher : more
+woman : isha
+Translation: flag : degel
+Translation: goat : ez
+Translation: school : beitsefer
