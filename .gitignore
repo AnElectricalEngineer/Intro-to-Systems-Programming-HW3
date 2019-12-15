@@ -56,3 +56,4 @@ HW3/HW3.vcxproj
 HW3/HW3.sln
 HW3/.vs/HW3/v16/Browse.VC.db
 HW3/.vs/HW3/v16/Browse.VC.opendb
+*.ipch
