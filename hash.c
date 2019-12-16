@@ -18,3 +18,4 @@ pHash HashCreate(unsigned int size, HashFunc func)
 
 	return hashTable;
 }
+//This is just a test
