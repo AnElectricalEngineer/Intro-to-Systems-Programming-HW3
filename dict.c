@@ -1,210 +1,106 @@
-#include "hash.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include "hash.h"
+#include "dict.h"
 
-typedef struct _ELEMENT_NODE
+
+int HashWord (pKey word, int size)
 {
-	pElement element;
-	struct _ELEMENT_NODE* next;
-	
-}ElementNode, *pElementNode;
-
-typedef struct _Hash
-{
-	pElementNode *pFirstNode;
-	HashFunc func;
-	PrintFunc print;
-	CompareFunc comp;
-	GetKeyFunc getKey;
-	DestroyFunc destroy;
-
-	// *************************************************
-	unsigned int size;
-	//unsigned int numElement; // need to add this to chech that we dont overflow
-	//**************************************************
-} Hash, *pHash;
-
-
-
-pHash HashCreate(unsigned int size, HashFunc func, PrintFunc print, CompareFunc comp, GetKeyFunc getKey, DestroyFunc destroy)
-{
-	// create hashTbale
-	pHash hashTable = (pHash)malloc(sizeof(Hash));
-	if (hashTable == NULL)
-	{
-		fprintf(stderr, "Error Allocating Memory");
-		exit(-1);
-		// need to add "Exit" from the program
-	}
-
-	// creat the hash and set all the address to NULL
-	hashTable->pFirstNode = (pElementNode*)calloc(size, sizeof(ElementNode));
-	if (hashTable->pFirstNode == NULL)
-	{
-		fprintf(stderr, "Error Allocating Memory");
-		free(hashTable);
-		exit(-1);
-		// need to add "Exit" from the program
-	}
-	pElement** indxPtr = &(hashTable->pFirstNode);
-	for (unsigned int i = 0; i < size; i++)
-	{
-		*indxPtr = NULL;
-		indxPtr++;
-	}
-
-	//create pointer to the func
-	hashTable->func = func;
-	hashTable->print = print;
-	hashTable->comp = comp;
-	hashTable->getKey = getKey;
-	hashTable->destroy = destroy;
-
-	// ints for overflow
-	hashTable->size = size;
-	//hashTable->numElement = 0;
-	
-	return hashTable;
+	return ((int)((char*)word - 'a') * 26 + strlen((char*)word)) % size;
 }
 
-Result HashAdd(pHash hashTable, pElement element)
+Result PrintEntry(pElement node)
 {
-	// edge case
-	if (hashTable == NULL || element == NULL || HashFind(hashTable, hashTable->getKey(element)) != NULL)
+	if (node == NULL)
 		return FAIL;
-
-	// create node
-	pElementNode pNode = (pElementNode)malloc(sizeof(ElementNode));
-	if (pNode == NULL)
-	{
-		fprintf(stderr, "Error Allocating Memory");
-		exit(-1);
-		// need to add "Exit" from the program
-	}
-	pNode->element = element;
-
-	// get keyHash
-	pKey key = hashTable->getKey(element);
-	unsigned int size = hashTable->size;
-	int keyHash = hashTable->func(key, size);
-
-	// link the element
-	pElementNode* indxPtr = hashTable->pFirstNode + keyHash;
-	pNode->next = *(indxPtr);
-	*(indxPtr) = pNode;
-
-
+	printf("%s:%s", ((pWordNode)node)->word, ((pWordNode)node)->translation);
 	return SUCCESS;
 }
 
-pElement HashFind(pHash hashTable, pKey key)
+CompResult CompareWords(pKey word1, pKey word2)
 {
-	// edge case
-	if (hashTable == NULL || key == NULL)
-		return NULL;
-
-	// get keyHash
-	unsigned int size = hashTable->size;
-	int keyHash = hashTable->func(key, size);
-
-	// search the key in the node
-	pElementNode* indxPtr = hashTable->pFirstNode + keyHash;
-	pElementNode searchElement = *(indxPtr);
-	// search in the heashKeyNode until node==NULL
-	for (; searchElement; searchElement = searchElement->next)
+	/*for (int i = 0; i < 25; i++)
 	{
-		if (hashTable->getKey(searchElement->element) == key)
-			return searchElement->element;
-
+		if (word1[i] != word2[i])
+			return DIFFERENT;
+		if (word1[i] == 0x00)
+			return SAME;
 	}
-
-	//fail, key not found
-	return NULL;
+	return SAME;*/
+	return strcmp((char*)word1, (char*)word2);
 }
 
-Result HashRemove(pHash hashTable, pKey key)
+pKey GetEntryKey(pElement node)
 {
-	// edge case. and make sure ther is at lest one element in the node
-	if (hashTable == NULL || key == NULL || HashFind(hashTable, key) == NULL)
+	return (pKey) ( ((pWordNode)node)->word );
+}
+
+void DestroyEntry(pElement node)
+{
+	free((pWordNode)node);
+	return;
+}
+
+pHash CreateDictionary()
+{
+	unsigned int size = 26;
+	return HashCreate(size , HashWord, PrintEntry, CompareWords, GetEntryKey, DestroyEntry);
+}
+
+Result AddTranslation(pHash dictionary, pKey word, char* translation)
+{
+	if (dictionary == NULL)
 		return FAIL;
 
-	// get keyHash
-	unsigned int size = hashTable->size;
-	int keyHash = hashTable->func(key, size);
+	pElement element =  HashFind(dictionary, word);
+	if (element != NULL)
+		return FAIL;
 
-	// search the key in the node
-	pElementNode* indxPtr = hashTable->pFirstNode + keyHash;
-	pElementNode searchElement = *(indxPtr);
-	// if the node is the first node
-	if (hashTable->getKey(searchElement->element) == key)
-	{
-		// destroy the first elementNode
-		*(indxPtr) = searchElement->next;
-		hashTable->destroy(searchElement->element);
-		free(searchElement);
-		return SUCCESS;
-	}
+	// creat element
+	pWordNode node = (pWordNode)malloc(sizeof(WordNode));
+	if (node == NULL)
+		return FAIL;
+	strcpy(node->word, (char*)word);
+	strcpy(node->translation, translation);
 
-	// the node is not the first one, so there is at lest 2 element
-	// search in the heashKeyNode until node==NULL
-	pElementNode preElement = searchElement;
-	searchElement = searchElement->next;
-	while (searchElement)
-	{
-		if (hashTable->getKey(searchElement->element) == key)
-		{
-			preElement->next = searchElement->next;
-			hashTable->destroy(searchElement->element);
-			free(searchElement);
-			return SUCCESS;
-		}
-		preElement = preElement->next;
-		searchElement = searchElement->next;
-	}
+	// add element
+	return HashAdd(dictionary, ((pElement)node));
 
-	//fail, key not found
-	return FAIL;
+
+	//strcpy( ((pWordNode)element)->translation, translation );
 }
 
-Result HashPrint(pHash hashTable)
+Result Translate(pHash dictionary, pKey word)
 {
 	//edge case
-	if (hashTable == NULL)
+	if (dictionary == NULL)
 		return FAIL;
 
-	// print
-	pElementNode* indxPtr;
-	for (unsigned int i = 0; i < hashTable->size; i++)
-	{
-		indxPtr = hashTable->pFirstNode + i;
-		for (pElementNode searchElement = *(indxPtr); searchElement != NULL; searchElement = searchElement->next)
-		{
-			hashTable->print(searchElement->element);
-		}
-		printf("\n");
-	}
+	//get node
+	pElement element = HashFind(dictionary, word);
+	if (element == NULL)
+		return FAIL;
 
+	//print
+	printf("Translation ");
+	PrintEntry(element);
 	return SUCCESS;
 }
 
-Result HashDestroy(pHash hashTable)
+Result DeleteTranslation(pHash dictionary, pKey word)
 {
 	//edge case
-	if (hashTable == NULL)
+	if (dictionary == NULL)
 		return FAIL;
 
-	// destroy all
-	pElementNode* indxPtr;
-	for (unsigned int i = 0; i < hashTable->size; i++)
-	{
-		// destroy node
-		indxPtr = hashTable->pFirstNode + i;
-		while(*indxPtr != NULL)
-		{
-			pElementNode searchElement = *(indxPtr);
-			HashRemove(hashTable, hashTable->getKey(searchElement->element));
-		}
-	}
+	return HashRemove(dictionary, word);
+}
 
-	return SUCCESS;
+Result PrintDictionary(pHash dictionary)
+{
+	if (dictionary == NULL)
+		return FAIL;
+	printf("Dictionary Contents\n");
+	return HashPrint(dictionary);
 }
