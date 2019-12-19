@@ -21,7 +21,16 @@ pHash ReadDictionary () {
 	return dictionary;
 }
 
-int main () {
-	// Add your code here...
+int main ()
+{
+	pHash dictionary;
+	dictionary = CreateDictionary();
+
+	char* word, * translation;
+	word = "dan";
+	translation = "ilan";
+
+	AddTranslation(dictionary, word, translation);
+	PrintDictionary(dictionary);
 	return 0;
 }
