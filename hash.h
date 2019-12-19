@@ -31,7 +31,7 @@ typedef void (*DestroyFunc)(pElement element);
 //
 // Return value : pointer to hash table, or NULL on failure
 //*************************************************************************************
-pHash HashCreate(int, HashFunc, PrintFunc, CompareFunc, GetKeyFunc, DestroyFunc);
+pHash HashCreate(unsigned int, HashFunc, PrintFunc, CompareFunc, GetKeyFunc, DestroyFunc);
 //************************************************************************************* 
 // Function name : HashAdd
 //
