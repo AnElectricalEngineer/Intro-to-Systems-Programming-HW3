@@ -40,8 +40,8 @@ int main ()
 	Translate(dictionary, "dan");
 	Translate(dictionary, word);
 	Translate(dictionary, "moshe"); // not in the dictionary
-	DeleteTranslation(dictionary, "sahara");
-	DeleteTranslation(dictionary, "dan");
+	//DeleteTranslation(dictionary, "sahara");
+	//DeleteTranslation(dictionary, "dan");
 	PrintDictionary(dictionary);
 
 	DestroyDictionary(dictionary);
