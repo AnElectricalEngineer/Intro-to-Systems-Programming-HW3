@@ -1,6 +1,7 @@
 #include "hash.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 typedef struct _ELEMENT_NODE
 {
@@ -38,7 +39,7 @@ pHash HashCreate(unsigned int size, HashFunc func, PrintFunc print, CompareFunc 
 	}
 
 	// creat the hash and set all the address to NULL
-	hashTable->pFirstNode = (pElementNode*)malloc(size*sizeof(ElementNode));
+	hashTable->pFirstNode = (pElementNode)malloc(size*sizeof(ElementNode));
 	if (hashTable->pFirstNode == NULL)
 	{
 		fprintf(stderr, "Error Allocating Memory");
@@ -46,7 +47,7 @@ pHash HashCreate(unsigned int size, HashFunc func, PrintFunc print, CompareFunc 
 		exit(-1);
 		// need to add "Exit" from the program
 	}
-	pElement* indxPtr = (hashTable->pFirstNode);
+	pElementNode* indxPtr = (hashTable->pFirstNode);
 	for (unsigned int i = 0; i < size; i++)
 	{
 		*indxPtr = NULL;
@@ -113,7 +114,7 @@ pElement HashFind(pHash hashTable, pKey key)
 	// search in the heashKeyNode until node==NULL
 	for (; searchElement; searchElement = searchElement->next)
 	{
-		if (hashTable->getKey(searchElement->element) == key)
+		if (hashTable->comp(hashTable->getKey(searchElement->element), key))
 			return searchElement->element;
 
 	}
@@ -136,7 +137,7 @@ Result HashRemove(pHash hashTable, pKey key)
 	pElementNode* indxPtr = hashTable->pFirstNode + keyHash;
 	pElementNode searchElement = *(indxPtr);
 	// if the node is the first node
-	if (hashTable->getKey(searchElement->element) == key)
+	if (hashTable->comp(hashTable->getKey(searchElement->element), key))
 	{
 		// destroy the first elementNode
 		*(indxPtr) = searchElement->next;
@@ -151,7 +152,7 @@ Result HashRemove(pHash hashTable, pKey key)
 	searchElement = searchElement->next;
 	while (searchElement)
 	{
-		if (hashTable->getKey(searchElement->element) == key)
+		if (hashTable->comp(hashTable->getKey(searchElement->element), key))
 		{
 			preElement->next = searchElement->next;
 			hashTable->destroy(searchElement->element);
@@ -181,7 +182,11 @@ Result HashPrint(pHash hashTable)
 		{
 			hashTable->print(searchElement->element);
 		}
-		printf("\n");
+		//**********************************************************************
+		// make sure the not to print "\n" when there is no element in the hash
+		//**********************************************************************
+		if(*indxPtr != NULL)
+			printf("\n");
 	}
 
 	return SUCCESS;
@@ -201,7 +206,8 @@ Result HashDestroy(pHash hashTable)
 		indxPtr = hashTable->pFirstNode + i;
 		while(*indxPtr != NULL)
 		{
-			pElementNode searchElement = *(indxPtr);
+			// remove the first element in the node
+			pElementNode searchElement = *indxPtr;
 			HashRemove(hashTable, hashTable->getKey(searchElement->element));
 		}
 	}
