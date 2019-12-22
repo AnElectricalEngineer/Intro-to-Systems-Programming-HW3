@@ -39,9 +39,9 @@ int main ()
 
 	Translate(dictionary, "dan");
 	Translate(dictionary, word);
-	Translate(dictionary, "moshe"); // not in the dictionary
+	Translate(dictionary, "moshe"); // cant be added to the dictionary
 	//DeleteTranslation(dictionary, "sahara");
-	//DeleteTranslation(dictionary, "dan");
+	DeleteTranslation(dictionary, "dan");
 	PrintDictionary(dictionary);
 
 	DestroyDictionary(dictionary);
