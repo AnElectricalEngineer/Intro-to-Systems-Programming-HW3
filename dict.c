@@ -5,31 +5,37 @@
 #include "dict.h"
 
 
-int HashWord (char* word, int size)
+int HashWord (pKey key, int size)
 {
+	char* word = (char*)key;
 	return ((int)(word[0] - 'a') * 26 + strlen(word)) % size;
 }
 
-Result PrintEntry(pWordNode node)
+Result PrintEntry(pElement element)
 {
+	pWordNode node = (pWordNode)element;
 	if (node == NULL)
 		return FAIL;
 	printf("%s : %s", (node)->word, (node)->translation);
 	return SUCCESS;
 }
 
-CompResult CompareWords(char* word1, char* word2)
+CompResult CompareWords(pKey key1, pKey key2)
 {
+	char* word1 = (char*)key1;
+	char* word2 = (char*)key2;
 	return (strcmp(word1, word2) == 0);
 }
 
-pKey GetEntryKey(pWordNode node)
+pKey GetEntryKey(pElement element)
 {
+	pWordNode node = (pWordNode)element;
 	return node->word;
 }
 
-void DestroyEntry(pWordNode node)
+void DestroyEntry(pElement element)
 {
+	pWordNode node = (pWordNode)element;
 	free(node);
 	return;
 }
@@ -45,7 +51,7 @@ Result AddTranslation(pHash dictionary, char* word, char* translation)
 	if (dictionary == NULL)
 		return FAIL;
 
-	pWordNode element =  HashFind(dictionary, word);
+	pWordNode element =  HashFind(dictionary, (pKey)word);
 	if (element != NULL)
 		return FAIL;
 
@@ -57,7 +63,7 @@ Result AddTranslation(pHash dictionary, char* word, char* translation)
 	strcpy(node->translation, translation);
 
 	// add element
-	if (HashAdd(dictionary, node) == FAIL)
+	if (HashAdd(dictionary, (pElement)node) == FAIL)
 	{
 		free(node);
 		return FAIL;
@@ -73,13 +79,13 @@ Result Translate(pHash dictionary, char* word)
 		return FAIL;
 
 	//get node
-	pWordNode element = HashFind(dictionary, word);
+	pWordNode element = HashFind(dictionary, (pKey)word);
 	if (element == NULL)
 		return FAIL;
 
 	//print
 	printf("Translation: ");
-	PrintEntry(element);
+	PrintEntry((pElement)element);
 	printf("\n");
 	return SUCCESS;
 }
@@ -90,7 +96,7 @@ Result DeleteTranslation(pHash dictionary, char* word)
 	if (dictionary == NULL)
 		return FAIL;
 
-	return HashRemove(dictionary, word);
+	return HashRemove(dictionary, (pKey)word);
 }
 
 Result PrintDictionary(pHash dictionary)
