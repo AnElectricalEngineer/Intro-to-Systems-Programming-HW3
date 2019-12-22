@@ -31,6 +31,19 @@ int main ()
 	translation = "ilan";
 
 	AddTranslation(dictionary, word, translation);
+	AddTranslation(dictionary, word, "boga");
+
+	word = "sahara";
+	translation = "smart";
+	AddTranslation(dictionary, word, translation);
+
+	Translate(dictionary, "dan");
+	Translate(dictionary, word);
+	Translate(dictionary, "moshe"); // not in the dictionary
+	DeleteTranslation(dictionary, "sahara");
+	DeleteTranslation(dictionary, "dan");
 	PrintDictionary(dictionary);
+
+	DestroyDictionary(dictionary);
 	return 0;
 }
