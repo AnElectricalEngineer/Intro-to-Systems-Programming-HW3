@@ -5,40 +5,32 @@
 #include "dict.h"
 
 
-int HashWord (pKey word, int size)
+int HashWord (char* word, int size)
 {
-	return ((int)((char*)word - 'a') * 26 + strlen((char*)word)) % size;
+	return ((int)(word - 'a') * 26 + strlen(word)) % size;
 }
 
-Result PrintEntry(pElement node)
+Result PrintEntry(pWordNode node)
 {
 	if (node == NULL)
 		return FAIL;
-	printf("%s:%s", ((pWordNode)node)->word, ((pWordNode)node)->translation);
+	printf("%s : %s", (node)->word, (node)->translation);
 	return SUCCESS;
 }
 
-CompResult CompareWords(pKey word1, pKey word2)
+CompResult CompareWords(char* word1, char* word2)
 {
-	/*for (int i = 0; i < 25; i++)
-	{
-		if (word1[i] != word2[i])
-			return DIFFERENT;
-		if (word1[i] == 0x00)
-			return SAME;
-	}
-	return SAME;*/
-	return strcmp((char*)word1, (char*)word2);
+	return (strcmp(word1, word2) == 0);
 }
 
-pKey GetEntryKey(pElement node)
+pKey GetEntryKey(pWordNode node)
 {
-	return (pKey) ( ((pWordNode)node)->word );
+	return node->word;
 }
 
-void DestroyEntry(pElement node)
+void DestroyEntry(pWordNode node)
 {
-	free((pWordNode)node);
+	free(node);
 	return;
 }
 
@@ -48,12 +40,12 @@ pHash CreateDictionary()
 	return HashCreate(size , HashWord, PrintEntry, CompareWords, GetEntryKey, DestroyEntry);
 }
 
-Result AddTranslation(pHash dictionary, pKey word, char* translation)
+Result AddTranslation(pHash dictionary, char* word, char* translation)
 {
 	if (dictionary == NULL)
 		return FAIL;
 
-	pElement element =  HashFind(dictionary, word);
+	pWordNode element =  HashFind(dictionary, word);
 	if (element != NULL)
 		return FAIL;
 
@@ -61,34 +53,35 @@ Result AddTranslation(pHash dictionary, pKey word, char* translation)
 	pWordNode node = (pWordNode)malloc(sizeof(WordNode));
 	if (node == NULL)
 		return FAIL;
-	strcpy(node->word, (char*)word);
+	strcpy(node->word, word);
 	strcpy(node->translation, translation);
 
 	// add element
-	return HashAdd(dictionary, ((pElement)node));
+	return HashAdd(dictionary, (node));
 
 
 	//strcpy( ((pWordNode)element)->translation, translation );
 }
 
-Result Translate(pHash dictionary, pKey word)
+Result Translate(pHash dictionary, char* word)
 {
 	//edge case
 	if (dictionary == NULL)
 		return FAIL;
 
 	//get node
-	pElement element = HashFind(dictionary, word);
+	pWordNode element = HashFind(dictionary, word);
 	if (element == NULL)
 		return FAIL;
 
 	//print
-	printf("Translation ");
+	printf("Translation: ");
 	PrintEntry(element);
+	printf("\n");
 	return SUCCESS;
 }
 
-Result DeleteTranslation(pHash dictionary, pKey word)
+Result DeleteTranslation(pHash dictionary, char* word)
 {
 	//edge case
 	if (dictionary == NULL)
@@ -103,4 +96,10 @@ Result PrintDictionary(pHash dictionary)
 		return FAIL;
 	printf("Dictionary Contents\n");
 	return HashPrint(dictionary);
+}
+
+void DestroyDictionary(pHash dictionary)
+{
+	HashDestroy(dictionary);
+	return;
 }
