@@ -11,15 +11,17 @@ typedef struct _WORD_NODE
 	char translation[MAX_WORD_LEN];
 } WordNode, *pWordNode;
 
-int HashWord(pKey, int);
-Result PrintEntry(pElement);
-CompResult CompareWords(pKey, pKey);
-pKey GetEntryKey(pElement);
-void DestroyEntry(pElement);
+int HashWord(char*, int);
+Result PrintEntry(pWordNode);
+CompResult CompareWords(char*, char*);
+pKey GetEntryKey(pWordNode);
+void DestroyEntry(pWordNode);
 
 pHash CreateDictionary();
-Result AddTranslation(pHash, pKey, char*);
-Result Translate(pHash, pKey);
-Result DeleteTranslation(pHash, pKey);
+Result AddTranslation(pHash, char*, char*);
+Result Translate(pHash, char*);
+Result DeleteTranslation(pHash, char*);
 Result PrintDictionary(pHash);
+
+void DestroyDictionary(pHash);
 #endif
