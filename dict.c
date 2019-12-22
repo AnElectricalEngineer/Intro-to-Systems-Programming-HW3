@@ -7,7 +7,7 @@
 
 int HashWord (char* word, int size)
 {
-	return ((int)(word - 'a') * 26 + strlen(word)) % size;
+	return ((int)(word[0] - 'a') * 26 + strlen(word)) % size;
 }
 
 Result PrintEntry(pWordNode node)
@@ -57,10 +57,13 @@ Result AddTranslation(pHash dictionary, char* word, char* translation)
 	strcpy(node->translation, translation);
 
 	// add element
-	return HashAdd(dictionary, (node));
-
-
-	//strcpy( ((pWordNode)element)->translation, translation );
+	if (HashAdd(dictionary, node) == FAIL)
+	{
+		free(node);
+		return FAIL;
+	}
+	
+	return SUCCESS;
 }
 
 Result Translate(pHash dictionary, char* word)
