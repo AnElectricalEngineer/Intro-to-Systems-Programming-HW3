@@ -39,7 +39,7 @@ pHash HashCreate(unsigned int size, HashFunc func, PrintFunc print, CompareFunc 
 	}
 
 	// creat the hash and set all the address to NULL
-	hashTable->pFirstNode = (pElementNode)malloc(size*sizeof(ElementNode));
+	hashTable->pFirstNode = (pElementNode*)malloc(size*sizeof(ElementNode));
 	if (hashTable->pFirstNode == NULL)
 	{
 		fprintf(stderr, "Error Allocating Memory");
@@ -212,5 +212,7 @@ Result HashDestroy(pHash hashTable)
 		}
 	}
 
+	free(hashTable->pFirstNode);
+	free(hashTable);
 	return SUCCESS;
 }
