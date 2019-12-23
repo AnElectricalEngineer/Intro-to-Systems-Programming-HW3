@@ -33,20 +33,21 @@ typedef struct _Hash
 //				6) pointer to user-supplied function that destroys the hash table
 //
 // Return value : pointer to hash table, or NULL on failure
-//*************************************************************************************
+//*************************************************************************************c
 pHash HashCreate(unsigned int size, HashFunc func, PrintFunc print, CompareFunc comp, GetKeyFunc getKey, DestroyFunc destroy)
 {
 	pHash hashTable = (pHash)malloc(sizeof(Hash));
 	if (hashTable)
 	{
-		hashTable->pFirstNode = (pElementNode*)(calloc(size, sizeof(ElementNode)));
+		hashTable->pFirstNode = (pElementNode*)(malloc(size*sizeof(ElementNode)));
 		if (hashTable->pFirstNode)
 		{
-			pElementNode** indxPtr = &(hashTable->pFirstNode);
+			//pElementNode* indxPtr = hashTable->pFirstNode;
 			for (int i = 0; i < size; i++)
 			{
-				*indxPtr = NULL;
-				++indxPtr;
+				//*indxPtr = NULL;
+				//++indxPtr;
+				*((hashTable->pFirstNode) + i) = NULL;
 			}
 			hashTable->func = func;
 			hashTable->print = print;

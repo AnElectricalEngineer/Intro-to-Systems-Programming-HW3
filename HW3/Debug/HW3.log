@@ -1,0 +1,7 @@
+﻿  dict.c
+  hash.c
+C:\Users\joshu\Desktop\Semester 7\044101 - מבוא למערכות תוכנה\HW\HW 3\Intro-to-Systems-Programming-HW3\hash.c(46,22): warning C4018: '<': signed/unsigned mismatch
+  test1.c
+  Compiling...
+  Generating Code...
+  HW3.vcxproj -> C:\Users\joshu\Desktop\Semester 7\044101 - מבוא למערכות תוכנה\HW\HW 3\Intro-to-Systems-Programming-HW3\HW3\Debug\HW3.exe
