@@ -7,7 +7,6 @@ typedef struct _ELEMENT_NODE
 {
 	pElement element;
 	struct _ELEMENT_NODE* next;
-	
 }ElementNode, *pElementNode;
 
 typedef struct _Hash
@@ -21,15 +20,13 @@ typedef struct _Hash
 
 	// *************************************************
 	unsigned int size;
-	//unsigned int numElement; // need to add this to chech that we dont overflow
+	//unsigned int numElement; // need to add this to check that we dont overflow
 	//**************************************************
 } Hash, *pHash;
 
-
-
 pHash HashCreate(unsigned int size, HashFunc func, PrintFunc print, CompareFunc comp, GetKeyFunc getKey, DestroyFunc destroy)
 {
-	// create hashTbale
+	// create hash table
 	pHash hashTable = (pHash)malloc(sizeof(Hash));
 	if (hashTable == NULL)
 	{
@@ -38,7 +35,7 @@ pHash HashCreate(unsigned int size, HashFunc func, PrintFunc print, CompareFunc 
 		// need to add "Exit" from the program
 	}
 
-	// creat the hash and set all the address to NULL
+	// create the hash and set all the address to NULL
 	hashTable->pFirstNode = (pElementNode*)malloc(size*sizeof(ElementNode));
 	if (hashTable->pFirstNode == NULL)
 	{
@@ -47,14 +44,14 @@ pHash HashCreate(unsigned int size, HashFunc func, PrintFunc print, CompareFunc 
 		exit(-1);
 		// need to add "Exit" from the program
 	}
-	pElementNode* indxPtr = (hashTable->pFirstNode);
+	pElementNode* indxPtr = hashTable->pFirstNode;
 	for (unsigned int i = 0; i < size; i++)
 	{
 		*indxPtr = NULL;
 		indxPtr++;
 	}
 
-	//create pointer to the func
+	//create pointer to the funcs
 	hashTable->func = func;
 	hashTable->print = print;
 	hashTable->comp = comp;
@@ -88,12 +85,10 @@ Result HashAdd(pHash hashTable, pElement element)
 	pKey key = hashTable->getKey(element);
 	unsigned int size = hashTable->size;
 	int keyHash = hashTable->func(key, size);
-
 	// link the element
 	pElementNode* indxPtr = hashTable->pFirstNode + keyHash;
-	pNode->next = *(indxPtr);
-	*(indxPtr) = pNode;
-
+	pNode->next = *indxPtr;
+	*indxPtr = pNode;
 
 	return SUCCESS;
 }
@@ -110,13 +105,12 @@ pElement HashFind(pHash hashTable, pKey key)
 
 	// search the key in the node
 	pElementNode* indxPtr = hashTable->pFirstNode + keyHash;
-	pElementNode searchElement = *(indxPtr);
-	// search in the heashKeyNode until node==NULL
+	pElementNode searchElement = *indxPtr;
+	// search in the hashKeyNode until node==NULL
 	for (; searchElement; searchElement = searchElement->next)
 	{
 		if (hashTable->comp(hashTable->getKey(searchElement->element), key))
 			return searchElement->element;
-
 	}
 
 	//fail, key not found
@@ -125,7 +119,7 @@ pElement HashFind(pHash hashTable, pKey key)
 
 Result HashRemove(pHash hashTable, pKey key)
 {
-	// edge case. and make sure ther is at lest one element in the node
+	// edge case. and make sure there is at least one element in the node
 	if (hashTable == NULL || key == NULL || HashFind(hashTable, key) == NULL)
 		return FAIL;
 
@@ -147,7 +141,7 @@ Result HashRemove(pHash hashTable, pKey key)
 	}
 
 	// the node is not the first one, so there is at lest 2 element
-	// search in the heashKeyNode until node==NULL
+	// search in the hashKeyNode until node==NULL
 	pElementNode preElement = searchElement;
 	searchElement = searchElement->next;
 	while (searchElement)
@@ -178,17 +172,16 @@ Result HashPrint(pHash hashTable)
 	for (unsigned int i = 0; i < hashTable->size; i++)
 	{
 		indxPtr = hashTable->pFirstNode + i;
-		for (pElementNode searchElement = *(indxPtr); searchElement != NULL; searchElement = searchElement->next)
+		for (pElementNode searchElement = *indxPtr; searchElement != NULL; searchElement = searchElement->next)
 		{
 			hashTable->print(searchElement->element);
 		}
 		//**********************************************************************
-		// make sure the not to print "\n" when there is no element in the hash
+		// make sure not to print "\n" when there is no element in the hash
 		//**********************************************************************
-		if(*indxPtr != NULL)
-			printf("\n");
+		/*if(*indxPtr != NULL)
+			printf("\n");*/
 	}
-
 	return SUCCESS;
 }
 
@@ -211,7 +204,6 @@ Result HashDestroy(pHash hashTable)
 			HashRemove(hashTable, hashTable->getKey(searchElement->element));
 		}
 	}
-
 	free(hashTable->pFirstNode);
 	free(hashTable);
 	return SUCCESS;

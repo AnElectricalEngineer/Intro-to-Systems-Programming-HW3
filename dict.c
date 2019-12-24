@@ -4,7 +4,6 @@
 #include "hash.h"
 #include "dict.h"
 
-
 int HashWord (pKey key, int size)
 {
 	char* word = (char*)key;
@@ -16,7 +15,7 @@ Result PrintEntry(pElement element)
 	pWordNode node = (pWordNode)element;
 	if (node == NULL)
 		return FAIL;
-	printf("%s : %s", (node)->word, (node)->translation);
+	printf("%s : %s\n", node->word, node->translation);
 	return SUCCESS;
 }
 
@@ -37,7 +36,6 @@ void DestroyEntry(pElement element)
 {
 	pWordNode node = (pWordNode)element;
 	free(node);
-	return;
 }
 
 pHash CreateDictionary()
@@ -55,7 +53,7 @@ Result AddTranslation(pHash dictionary, char* word, char* translation)
 	if (element != NULL)
 		return FAIL;
 
-	// creat element
+	// create element
 	pWordNode node = (pWordNode)malloc(sizeof(WordNode));
 	if (node == NULL)
 		return FAIL;
@@ -68,7 +66,6 @@ Result AddTranslation(pHash dictionary, char* word, char* translation)
 		free(node);
 		return FAIL;
 	}
-	
 	return SUCCESS;
 }
 
@@ -110,5 +107,4 @@ Result PrintDictionary(pHash dictionary)
 void DestroyDictionary(pHash dictionary)
 {
 	HashDestroy(dictionary);
-	return;
 }
