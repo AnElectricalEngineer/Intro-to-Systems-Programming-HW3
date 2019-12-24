@@ -62,49 +62,5 @@ int main ()
 	Translate(dictionary, "apple");
 	DestroyDictionary(dictionary);
 
-
-	//pHash dictionary = CreateDictionary();
-
-	//char* word, * translation;
-	//word = "dog";
-	//translation = "kelev";
-	//AddTranslation(dictionary, word, translation);
-
-	//word = "cat";
-	//translation = "hatul";
-	//AddTranslation(dictionary, word, translation);
-
-	//word = "flag";
-	//translation = "degel";
-	//AddTranslation(dictionary, word, translation);
-
-	//word = "man";
-	//translation = "ish";
-	//AddTranslation(dictionary, word, translation);
-
-	//word = "school";
-	//translation = "beitsefer";
-	//AddTranslation(dictionary, word, translation);
-
-	//word = "woman";
-	//translation = "isha";
-	//AddTranslation(dictionary, word, translation);
-
-	//word = "student";
-	//translation = "talmid";
-	//AddTranslation(dictionary, word, translation);
-
-	//word = "home";
-	//translation = "bayt";
-	//AddTranslation(dictionary, word, translation);
-
-	//word = "teacher";
-	//translation = "more";
-	//AddTranslation(dictionary, word, translation);
-
-	//word = "exercise";
-	//translation = "targil";
-	//AddTranslation(dictionary, word, translation);
-	//PrintDictionary(dictionary);
 	return 0;
 }

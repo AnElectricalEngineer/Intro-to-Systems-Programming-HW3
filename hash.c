@@ -17,32 +17,41 @@ typedef struct _Hash
 	CompareFunc comp;
 	GetKeyFunc getKey;
 	DestroyFunc destroy;
-
-	// *************************************************
 	int size;
-	//int numElement; // need to add this to check that we dont overflow
-	//**************************************************
+
 } Hash, *pHash;
 
+//************************************************************************************* 
+// Function name : HashCreate
+//
+// Description : creates an empty hash table w/undefined (NULL) elements
+//
+// Parameters:  1) size of array
+//				2) pointer to user-supplied hashing function
+//				3) pointer to user-supplied element printing function
+//				4) pointer to user-supplied function that compares keys of two elements
+//				5) pointer to user-supplied function that returns key of element
+//				6) pointer to user-supplied function that destroys the hash table
+//
+// Return value : pointer to hash table, or NULL on failure
+//*************************************************************************************
 pHash HashCreate(int size, HashFunc func, PrintFunc print, CompareFunc comp, GetKeyFunc getKey, DestroyFunc destroy)
 {
 	// create hash table
 	pHash hashTable = (pHash)malloc(sizeof(Hash));
 	if (hashTable == NULL)
 	{
-		fprintf(stderr, "Error Allocating Memory");
+		printf("Error Allocating Memory");
 		exit(-1);
-		// need to add "Exit" from the program
 	}
 
 	// create the hash and set all the address to NULL
 	hashTable->pFirstNode = (pElementNode*)malloc(size*sizeof(pElementNode));
 	if (hashTable->pFirstNode == NULL)
 	{
-		fprintf(stderr, "Error Allocating Memory");
+		printf("Error Allocating Memory");
 		free(hashTable);
 		exit(-1);
-		// need to add "Exit" from the program
 	}
 	pElementNode* indxPtr = hashTable->pFirstNode;
 	for (int i = 0; i < size; i++)
@@ -55,14 +64,22 @@ pHash HashCreate(int size, HashFunc func, PrintFunc print, CompareFunc comp, Get
 	hashTable->comp = comp;
 	hashTable->getKey = getKey;
 	hashTable->destroy = destroy;
-
-	// ints for overflow
 	hashTable->size = size;
-	//hashTable->numElement = 0;
 	
 	return hashTable;
 }
 
+//************************************************************************************* 
+// Function name : HashAdd
+//
+// Description : inserts a new element into the hash table
+//				 new elements are inserted at the HEAD of the linked list 
+//
+// Parameters:  1) pointer to hash table
+//				2) pointer to new element to be added
+//
+// Return value : FAIL if unsuccessful, SUCCESS if successful
+//*************************************************************************************
 Result HashAdd(pHash hashTable, pElement element)
 {
 	// edge case
@@ -73,9 +90,8 @@ Result HashAdd(pHash hashTable, pElement element)
 	pElementNode pNode = (pElementNode)malloc(sizeof(ElementNode));
 	if (pNode == NULL)
 	{
-		fprintf(stderr, "Error Allocating Memory");
+		printf("Error Allocating Memory");
 		exit(-1);
-		// need to add "Exit" from the program
 	}
 	pNode->element = element;
 
@@ -84,7 +100,6 @@ Result HashAdd(pHash hashTable, pElement element)
 	int size = hashTable->size;
 	int keyHash = hashTable->func(key, size);
 	// link the element
-	
 	pElementNode* indxPtr = hashTable->pFirstNode + keyHash;
 	pNode->next = *indxPtr;
 	*indxPtr = pNode;
@@ -92,6 +107,16 @@ Result HashAdd(pHash hashTable, pElement element)
 	return SUCCESS;
 }
 
+//************************************************************************************* 
+// Function name : HashFind
+//
+// Description : searches for element in hash table with a given key
+//
+// Parameters:  1) pointer to hash table
+//				2) pointer to key of element to search for
+//
+// Return value : pointer to element with requested key, or NULL if doesn't exist
+//*************************************************************************************
 pElement HashFind(pHash hashTable, pKey key)
 {
 	// edge case
@@ -116,6 +141,17 @@ pElement HashFind(pHash hashTable, pKey key)
 	return NULL;
 }
 
+//************************************************************************************* 
+// Function name : HashRemove
+//
+// Description : finds element with given key, and deletes the element from the hash
+//			     table - frees memory allocated
+//
+// Parameters:  1) pointer to hash table
+//				2) pointer to key of element to remove
+//
+// Return value : SUCCESS if successfully removed element, FAIL if not
+//*************************************************************************************
 Result HashRemove(pHash hashTable, pKey key)
 {
 	// edge case. and make sure there is at least one element in the node
@@ -160,6 +196,17 @@ Result HashRemove(pHash hashTable, pKey key)
 	return FAIL;
 }
 
+//************************************************************************************* 
+// Function name : HashPrint
+//
+// Description : prints the elements in the hash table
+//				 prints the elements from the array in order from index 0 to size-1,
+//				 where each linked list is printed from the head to the tail
+//
+// Parameters:  1) pointer to hash table
+//
+// Return value : SUCCESS if succeeded printing, FAIL if not
+//*************************************************************************************
 Result HashPrint(pHash hashTable)
 {
 	//edge case
@@ -175,37 +222,19 @@ Result HashPrint(pHash hashTable)
 		{
 			hashTable->print(searchElement->element);
 		}
-		//**********************************************************************
-		// make sure not to print "\n" when there is no element in the hash
-		//**********************************************************************
-		/*if(*indxPtr != NULL)
-			printf("\n");*/
 	}
 	return SUCCESS;
 }
 
-//Result HashPrint(pHash hashTable) //josh
-//{
-//	//edge case
-//	if (hashTable == NULL)
-//		return FAIL;
+// Function name : HashDestroy
 //
-//	 //print
-//	pElementNode* indxPtr = hashTable->pFirstNode;
-//	for (int i = 0; i < hashTable->size; i++)
-//	{
-//		if (*(indxPtr+i) == NULL)
-//			continue;
-//		pElementNode j = *(indxPtr + i);
-//		while(j != NULL)
-//		{
-//			hashTable->print(j);
-//			j = j->next;
-//		}
-//	}
-//	return SUCCESS;
-//}
-
+// Description : destroys the entire hash table and frees all dynamically allocated
+//				 memory
+//
+// Parameters:  1) pointer to hash table
+//
+// Return value : SUCCESS if hash table destroyed successfully, FAIL otherwise
+//*************************************************************************************
 Result HashDestroy(pHash hashTable)
 {
 	//edge case
