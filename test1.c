@@ -22,29 +22,6 @@ pHash ReadDictionary () {
 
 int main ()
 {
-	//pHash dictionary;
-	//dictionary = CreateDictionary();
-
-	//char* word, * translation;
-	//word = "dan";
-	//translation = "ilan";
-
-	//AddTranslation(dictionary, word, translation);
-	//AddTranslation(dictionary, word, "boga");
-
-	//word = "sahara";
-	//translation = "smart";
-	//AddTranslation(dictionary, word, translation);
-
-	//Translate(dictionary, "dan");
-	//Translate(dictionary, word);
-	//Translate(dictionary, "moshe"); // cant be added to the dictionary
-	////DeleteTranslation(dictionary, "sahara");
-	//DeleteTranslation(dictionary, "dan");
-	//PrintDictionary(dictionary);
-
-	//DestroyDictionary(dictionary);
-
 	pHash dictionary = ReadDictionary();
 	PrintDictionary(dictionary);
 	DeleteTranslation(dictionary, "dog");
@@ -61,6 +38,5 @@ int main ()
 	Translate(dictionary, "school");
 	Translate(dictionary, "apple");
 	DestroyDictionary(dictionary);
-
 	return 0;
 }

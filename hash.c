@@ -175,7 +175,7 @@ Result HashRemove(pHash hashTable, pKey key)
 		return SUCCESS;
 	}
 
-	// the node is not the first one, so there is at lest 2 element
+	// the node is not the first one, so there are at least 2 elements
 	// search in the hashKeyNode until node==NULL
 	pElementNode preElement = searchElement;
 	searchElement = searchElement->next;

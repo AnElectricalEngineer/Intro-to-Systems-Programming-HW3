@@ -54,7 +54,7 @@ CompResult CompareWords(pKey key1, pKey key2)
 {
 	char* word1 = (char*)key1;
 	char* word2 = (char*)key2;
-	return (strcmp(word1, word2) == 0);
+	return strcmp(word1, word2) == 0;
 }
 
 //************************************************************************************* 
@@ -69,6 +69,8 @@ CompResult CompareWords(pKey key1, pKey key2)
 //*************************************************************************************
 pKey GetEntryKey(pElement element)
 {
+	if (element == NULL)
+		return NULL;
 	pWordNode node = (pWordNode)element;
 	return node->word;
 }
@@ -84,6 +86,8 @@ pKey GetEntryKey(pElement element)
 //*************************************************************************************
 void DestroyEntry(pElement element)
 {
+	if (element == NULL)
+		return;
 	pWordNode node = (pWordNode)element;
 	free(node);
 }
@@ -99,7 +103,6 @@ void DestroyEntry(pElement element)
 //*************************************************************************************
 pHash CreateDictionary()
 {
-	
 	int size = 26*25;
 	return HashCreate(size , HashWord, PrintEntry, CompareWords, GetEntryKey, DestroyEntry);
 }
@@ -117,7 +120,7 @@ pHash CreateDictionary()
 //*************************************************************************************
 Result AddTranslation(pHash dictionary, char* word, char* translation)
 {
-	if (dictionary == NULL)
+	if (dictionary == NULL || word == NULL || translation == NULL)
 		return FAIL;
 
 	pWordNode element =  HashFind(dictionary, (pKey)word);
@@ -154,7 +157,7 @@ Result AddTranslation(pHash dictionary, char* word, char* translation)
 Result Translate(pHash dictionary, char* word)
 {
 	//edge case
-	if (dictionary == NULL)
+	if (dictionary == NULL || word == NULL)
 		return FAIL;
 
 	//get node
@@ -181,9 +184,8 @@ Result Translate(pHash dictionary, char* word)
 Result DeleteTranslation(pHash dictionary, char* word)
 {
 	//edge case
-	if (dictionary == NULL)
+	if (dictionary == NULL || word == NULL)
 		return FAIL;
-
 	return HashRemove(dictionary, (pKey)word);
 }
 
