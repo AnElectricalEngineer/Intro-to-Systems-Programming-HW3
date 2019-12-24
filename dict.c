@@ -40,7 +40,8 @@ void DestroyEntry(pElement element)
 
 pHash CreateDictionary()
 {
-	unsigned int size = 26;
+	
+	int size = 26;
 	return HashCreate(size , HashWord, PrintEntry, CompareWords, GetEntryKey, DestroyEntry);
 }
 

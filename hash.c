@@ -19,12 +19,12 @@ typedef struct _Hash
 	DestroyFunc destroy;
 
 	// *************************************************
-	unsigned int size;
-	//unsigned int numElement; // need to add this to check that we dont overflow
+	int size;
+	//int numElement; // need to add this to check that we dont overflow
 	//**************************************************
 } Hash, *pHash;
 
-pHash HashCreate(unsigned int size, HashFunc func, PrintFunc print, CompareFunc comp, GetKeyFunc getKey, DestroyFunc destroy)
+pHash HashCreate(int size, HashFunc func, PrintFunc print, CompareFunc comp, GetKeyFunc getKey, DestroyFunc destroy)
 {
 	// create hash table
 	pHash hashTable = (pHash)malloc(sizeof(Hash));
@@ -36,7 +36,7 @@ pHash HashCreate(unsigned int size, HashFunc func, PrintFunc print, CompareFunc 
 	}
 
 	// create the hash and set all the address to NULL
-	hashTable->pFirstNode = (pElementNode*)malloc(size*sizeof(ElementNode));
+	hashTable->pFirstNode = (pElementNode*)malloc(size*sizeof(pElementNode));
 	if (hashTable->pFirstNode == NULL)
 	{
 		fprintf(stderr, "Error Allocating Memory");
@@ -45,12 +45,10 @@ pHash HashCreate(unsigned int size, HashFunc func, PrintFunc print, CompareFunc 
 		// need to add "Exit" from the program
 	}
 	pElementNode* indxPtr = hashTable->pFirstNode;
-	for (unsigned int i = 0; i < size; i++)
+	for (int i = 0; i < size; i++)
 	{
-		*indxPtr = NULL;
-		indxPtr++;
+		*(indxPtr + i) = NULL;
 	}
-
 	//create pointer to the funcs
 	hashTable->func = func;
 	hashTable->print = print;
@@ -83,9 +81,10 @@ Result HashAdd(pHash hashTable, pElement element)
 
 	// get keyHash
 	pKey key = hashTable->getKey(element);
-	unsigned int size = hashTable->size;
+	int size = hashTable->size;
 	int keyHash = hashTable->func(key, size);
 	// link the element
+	
 	pElementNode* indxPtr = hashTable->pFirstNode + keyHash;
 	pNode->next = *indxPtr;
 	*indxPtr = pNode;
@@ -100,7 +99,7 @@ pElement HashFind(pHash hashTable, pKey key)
 		return NULL;
 
 	// get keyHash
-	unsigned int size = hashTable->size;
+	int size = hashTable->size;
 	int keyHash = hashTable->func(key, size);
 
 	// search the key in the node
@@ -124,7 +123,7 @@ Result HashRemove(pHash hashTable, pKey key)
 		return FAIL;
 
 	// get keyHash
-	unsigned int size = hashTable->size;
+	int size = hashTable->size;
 	int keyHash = hashTable->func(key, size);
 
 	// search the key in the node
@@ -169,7 +168,7 @@ Result HashPrint(pHash hashTable)
 
 	// print
 	pElementNode* indxPtr;
-	for (unsigned int i = 0; i < hashTable->size; i++)
+	for (int i = 0; i < hashTable->size; i++)
 	{
 		indxPtr = hashTable->pFirstNode + i;
 		for (pElementNode searchElement = *indxPtr; searchElement != NULL; searchElement = searchElement->next)
@@ -185,6 +184,28 @@ Result HashPrint(pHash hashTable)
 	return SUCCESS;
 }
 
+//Result HashPrint(pHash hashTable) //josh
+//{
+//	//edge case
+//	if (hashTable == NULL)
+//		return FAIL;
+//
+//	 //print
+//	pElementNode* indxPtr = hashTable->pFirstNode;
+//	for (int i = 0; i < hashTable->size; i++)
+//	{
+//		if (*(indxPtr+i) == NULL)
+//			continue;
+//		pElementNode j = *(indxPtr + i);
+//		while(j != NULL)
+//		{
+//			hashTable->print(j);
+//			j = j->next;
+//		}
+//	}
+//	return SUCCESS;
+//}
+
 Result HashDestroy(pHash hashTable)
 {
 	//edge case
@@ -193,7 +214,7 @@ Result HashDestroy(pHash hashTable)
 
 	// destroy all
 	pElementNode* indxPtr;
-	for (unsigned int i = 0; i < hashTable->size; i++)
+	for (int i = 0; i < hashTable->size; i++)
 	{
 		// destroy node
 		indxPtr = hashTable->pFirstNode + i;
