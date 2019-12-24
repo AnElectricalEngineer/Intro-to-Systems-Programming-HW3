@@ -17,11 +17,26 @@ pHash ReadDictionary () {
 		translation = strtok(NULL, "=");
 		AddTranslation(dictionary, word, translation);
 	}
-
 	return dictionary;
 }
 
-int main () {
-	// Add your code here...
+int main ()
+{
+	pHash dictionary = ReadDictionary();
+	PrintDictionary(dictionary);
+	DeleteTranslation(dictionary, "dog");
+	DeleteTranslation(dictionary, "cat");
+	DeleteTranslation(dictionary, "astronaut");
+	PrintDictionary(dictionary);
+	AddTranslation(dictionary, "goat", "ez");
+	AddTranslation(dictionary, "cow", "para");
+	AddTranslation(dictionary, "school", "beitsefer");
+	AddTranslation(dictionary, "boy", "yeled");
+	PrintDictionary(dictionary);
+	Translate(dictionary, "flag");
+	Translate(dictionary, "goat");
+	Translate(dictionary, "school");
+	Translate(dictionary, "apple");
+	DestroyDictionary(dictionary);
 	return 0;
 }

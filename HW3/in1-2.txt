@@ -1,0 +1,10 @@
+dog=kelev
+cat=hatul
+flag=degel
+man=ish
+school=beitsefer
+woman=isha
+student=talmid
+home=bayt
+teacher=more
+exercise=targil

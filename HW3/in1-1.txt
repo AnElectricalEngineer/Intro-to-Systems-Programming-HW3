@@ -1,0 +1,13 @@
+cat=hatul
+flag=degel
+woman=isha
+student=talmid
+cabbage=kruv
+angle=zavit
+home=bayt
+teacher=more
+exercise=targil
+dictionary=milon
+person=adam
+grade=tziyun
+astronaut=astronaut
